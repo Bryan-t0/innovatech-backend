@@ -1,0 +1,8 @@
+target/
+.idea/
+*.iml
+*.log
+
+# Local runtime output
+*.out.log
+*.err.log
