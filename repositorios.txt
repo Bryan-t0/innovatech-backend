@@ -1,8 +1,8 @@
 Repositorio principal backend:
-https://github.com/Bryan-t0/yeah
+https://github.com/Bryan-t0/innovatech-backend.git
 
 Frontend React/NPM:
-https://github.com/JFFica/innovatech-frontend
+https://github.com/Bryan-t0/Innovatech-Frontend.git
 
 API Gateway:
 innovatech-backend/api-gateway
@@ -17,4 +17,4 @@ Microservicio Analytics:
 innovatech-backend/analytics-service
 
 Descripcion:
-El proyecto implementa una arquitectura de microservicios para Innovatech Solutions usando React, Spring Boot, Maven, MySQL, JPA, API Gateway, Repository Pattern, Factory Method y fallback basico con try/catch.
+El proyecto implementa una arquitectura de microservicios para Innovatech Solutions usando React, Spring Boot, Maven, MySQL, JPA, API Gateway, Repository Pattern, Factory Method y fallback
