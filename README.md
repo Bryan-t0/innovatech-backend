@@ -93,7 +93,7 @@ Tambien se mantienen rutas compatibles sin `/api`: `/projects`, `/resources`, `/
 - API Gateway: punto unico de entrada para el frontend.
 - Repository Pattern: separacion del acceso a datos con `JpaRepository`.
 - Factory Method: creacion de entidades desde DTOs.
-- Circuit Breaker basico: fallback con `try/catch` en el gateway.
+- Circuit Breaker: Resilience4j con estados CLOSED, OPEN y HALF_OPEN, fallbacks y monitoreo Actuator.
 - Base de datos por servicio: cada microservicio administra su propia base MySQL.
 - DTO Pattern: separa contratos REST de entidades JPA.
 
