@@ -5,13 +5,9 @@ import com.innovatech.apigateway.dto.DashboardResponseDTO;
 import com.innovatech.apigateway.dto.ProjectDTO;
 import com.innovatech.apigateway.dto.ResourceDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,23 +17,18 @@ import java.util.List;
 public class DashboardService {
     private static final String FALLBACK_MESSAGE = "No fue posible obtener informacion desde uno de los microservicios.";
 
-    private final RestTemplate restTemplate;
-    private boolean fallbackUsed;
-
-    @Value("${services.projects.url}")
-    private String projectsUrl;
-
-    @Value("${services.resources.url}")
-    private String resourcesUrl;
-
-    @Value("${services.analytics.url}")
-    private String analyticsUrl;
+    private final MicroservicesClient microservicesClient;
 
     public DashboardResponseDTO getDashboard() {
-        fallbackUsed = false;
-        List<ProjectDTO> projects = getProjectsWithFallback();
-        List<ResourceDTO> resources = getResourcesWithFallback();
-        List<AnalyticsDTO> analytics = getAnalyticsWithFallback();
+        ServiceCallResult<List<ProjectDTO>> projectsResult = microservicesClient.getProjects();
+        ServiceCallResult<List<ResourceDTO>> resourcesResult = microservicesClient.getResources();
+        ServiceCallResult<List<AnalyticsDTO>> analyticsResult = microservicesClient.getAnalytics();
+        List<ProjectDTO> projects = projectsResult.data();
+        List<ResourceDTO> resources = resourcesResult.data();
+        List<AnalyticsDTO> analytics = analyticsResult.data();
+        boolean fallbackUsed = projectsResult.fallbackUsed()
+                || resourcesResult.fallbackUsed()
+                || analyticsResult.fallbackUsed();
 
         int activeProjects = (int) projects.stream()
                 .filter(project -> "IN_PROGRESS".equals(project.getStatus()))
@@ -66,56 +57,15 @@ public class DashboardService {
                 .build();
     }
 
-    public List<ProjectDTO> getProjectsWithFallback() {
-        try {
-            List<ProjectDTO> body = restTemplate.exchange(projectsUrl, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<ProjectDTO>>() {}).getBody();
-            return body == null ? List.of() : body;
-        } catch (Exception ex) {
-            fallbackUsed = true;
-            return List.of();
-        }
-    }
-
-    public List<ResourceDTO> getResourcesWithFallback() {
-        try {
-            List<ResourceDTO> body = restTemplate.exchange(resourcesUrl, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<ResourceDTO>>() {}).getBody();
-            return body == null ? List.of() : body;
-        } catch (Exception ex) {
-            fallbackUsed = true;
-            return List.of();
-        }
-    }
-
-    public List<AnalyticsDTO> getAnalyticsWithFallback() {
-        try {
-            List<AnalyticsDTO> body = restTemplate.exchange(analyticsUrl, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<AnalyticsDTO>>() {}).getBody();
-            return body == null ? List.of() : body;
-        } catch (Exception ex) {
-            fallbackUsed = true;
-            return List.of();
-        }
-    }
-
     public ResponseEntity<Object> proxyProjects(HttpMethod method, Long id, Object body) {
-        return proxy(buildUrl(projectsUrl, id), method, body);
+        return microservicesClient.proxyProjects(method, id, body);
     }
 
     public ResponseEntity<Object> proxyResources(HttpMethod method, Long id, Object body) {
-        return proxy(buildUrl(resourcesUrl, id), method, body);
+        return microservicesClient.proxyResources(method, id, body);
     }
 
     public ResponseEntity<Object> proxyAnalytics(HttpMethod method, Long id, Object body) {
-        return proxy(buildUrl(analyticsUrl, id), method, body);
-    }
-
-    private ResponseEntity<Object> proxy(String url, HttpMethod method, Object body) {
-        return restTemplate.exchange(url, method, new HttpEntity<>(body), Object.class);
-    }
-
-    private String buildUrl(String baseUrl, Long id) {
-        return id == null ? baseUrl : baseUrl + "/" + id;
+        return microservicesClient.proxyAnalytics(method, id, body);
     }
 }
