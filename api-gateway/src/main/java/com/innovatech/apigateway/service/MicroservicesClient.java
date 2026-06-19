@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -87,9 +86,7 @@ public class MicroservicesClient {
     }
 
     private ResponseEntity<Object> proxyFallback(HttpMethod method, Long id, Object body, Throwable exception) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of(
-                "message", "El microservicio no esta disponible en este momento.",
-                "reason", exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage()
-        ));
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("El microservicio no esta disponible en este momento.");
     }
 }
