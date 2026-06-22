@@ -1,6 +1,6 @@
 # Innovatech Solutions - Backend Microservicios
 
-Backend para la Evaluacion Parcial 2 de Desarrollo Fullstack III. Implementa un API Gateway y tres microservicios con Spring Boot, Maven, JPA, MySQL y comunicacion REST.
+Backend para la Evaluacion Parcial 3 de Desarrollo Fullstack III. Implementa un API Gateway y tres microservicios con Spring Boot, Maven, JPA, MySQL y comunicacion REST.
 
 ## Arquitectura
 
@@ -93,12 +93,20 @@ Tambien se mantienen rutas compatibles sin `/api`: `/projects`, `/resources`, `/
 - API Gateway: punto unico de entrada para el frontend.
 - Repository Pattern: separacion del acceso a datos con `JpaRepository`.
 - Factory Method: creacion de entidades desde DTOs.
-- Circuit Breaker basico: fallback con `try/catch` en el gateway.
+- Circuit Breaker: Resilience4j con circuitos independientes y fallbacks controlados.
 - Base de datos por servicio: cada microservicio administra su propia base MySQL.
 - DTO Pattern: separa contratos REST de entidades JPA.
 
-## Documentacion
+## Pruebas y cobertura
 
-- `docs/ANALISIS_PATRONES_ARQUETIPOS.md`
-- `docs/PLAN_BRANCHING.md`
-- `repositorios.txt`
+Cada componente backend utiliza JUnit, Mockito y JaCoCo. El siguiente comando ejecuta las pruebas, genera el reporte HTML y valida el minimo de 60%:
+
+```bash
+mvn verify
+```
+
+El reporte queda en `target/site/jacoco/index.html` dentro de cada componente.
+
+## Pruebas REST
+
+Importar `postman/Innovatech-EP3.postman_collection.json`. Incluye ejemplos para dashboard y CRUD de proyectos, recursos y metricas.

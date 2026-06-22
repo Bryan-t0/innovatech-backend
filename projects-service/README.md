@@ -30,3 +30,11 @@ Microservicio Spring Boot para la gestion de proyectos de Innovatech.
 ```bash
 mvn spring-boot:run
 ```
+
+## Pruebas
+
+```bash
+mvn verify
+```
+
+Reporte: `target/site/jacoco/index.html`. Cobertura minima: 60% de lineas.

@@ -1,0 +1,51 @@
+{
+  "info": {
+    "_postman_id": "5fd476d7-ef75-4aef-8877-innovatech-ep3",
+    "name": "Innovatech Solutions - Evaluacion 3",
+    "description": "Pruebas REST del API Gateway. Requiere los tres microservicios activos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "projectId", "value": "1" },
+    { "key": "resourceId", "value": "1" },
+    { "key": "metricId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Obtener dashboard integrado",
+          "request": { "method": "GET", "url": "{{baseUrl}}/dashboard" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('HTTP 200', () => pm.response.to.have.status(200));", "pm.test('Incluye colecciones', () => { const body = pm.response.json(); pm.expect(body).to.have.property('projects'); pm.expect(body).to.have.property('resources'); pm.expect(body).to.have.property('analytics'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        { "name": "Listar proyectos", "request": { "method": "GET", "url": "{{baseUrl}}/projects" } },
+        { "name": "Crear proyecto", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Portal Cliente\",\n  \"description\": \"Proyecto de evaluacion\",\n  \"status\": \"IN_PROGRESS\",\n  \"startDate\": \"2026-06-01\",\n  \"endDate\": \"2026-08-30\",\n  \"progress\": 40\n}" }, "url": "{{baseUrl}}/projects" } },
+        { "name": "Actualizar proyecto", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Portal Cliente\",\n  \"description\": \"Proyecto actualizado\",\n  \"status\": \"COMPLETED\",\n  \"startDate\": \"2026-06-01\",\n  \"endDate\": \"2026-08-30\",\n  \"progress\": 100\n}" }, "url": "{{baseUrl}}/projects/{{projectId}}" } },
+        { "name": "Eliminar proyecto", "request": { "method": "DELETE", "url": "{{baseUrl}}/projects/{{projectId}}" } }
+      ]
+    },
+    {
+      "name": "Resources",
+      "item": [
+        { "name": "Listar recursos", "request": { "method": "GET", "url": "{{baseUrl}}/resources" } },
+        { "name": "Crear recurso", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Ana Torres\",\n  \"role\": \"Developer\",\n  \"availability\": \"AVAILABLE\",\n  \"email\": \"ana@innovatech.cl\",\n  \"assignedProjectId\": null\n}" }, "url": "{{baseUrl}}/resources" } },
+        { "name": "Eliminar recurso", "request": { "method": "DELETE", "url": "{{baseUrl}}/resources/{{resourceId}}" } }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        { "name": "Listar metricas", "request": { "method": "GET", "url": "{{baseUrl}}/analytics" } },
+        { "name": "Crear metrica", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"metricName\": \"Calidad Sprint\",\n  \"metricType\": \"QUALITY\",\n  \"metricValue\": 92,\n  \"description\": \"Resultado de QA\",\n  \"generatedDate\": \"2026-06-22\"\n}" }, "url": "{{baseUrl}}/analytics" } },
+        { "name": "Eliminar metrica", "request": { "method": "DELETE", "url": "{{baseUrl}}/analytics/{{metricId}}" } }
+      ]
+    }
+  ]
+}
